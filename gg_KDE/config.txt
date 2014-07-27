@@ -1,0 +1,1 @@
+[{"Input_type" : "Read data", "Num_of_intervals" : 4, "Output_type" : "Plot", "Num_of_data_points" : 10000}]
