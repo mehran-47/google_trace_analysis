@@ -21,17 +21,20 @@ elif len(sys.argv) == 3 and sys.argv[2]=="--l" or sys.argv[2]=="--r":
 		print "Holt-Winter's Triple Exponential Smoothing chosen"
 		a_b_g = []
 		while True:
-			a_b_g =  raw_input("Enter values of 'alpha', 'beta', 'gamma' separated by commas\n\
-Default is alpha = 0.2, beta = 0.1, gamma = 0.05\n> ").split(",")
+			a_b_g =  raw_input("Enter values of 'alpha', 'beta', 'gamma' and number of forecast points separated by commas\n\
+Default is alpha = 0.2, beta = 0.1, gamma = 0.05, forecast = 5000\n> ").split(",")
 			if a_b_g[0] == "q":
 				sys.exit()
-			if len(a_b_g) == 3:
-				print "Executing analysis: holtwinters(%s,%s,%s)" %(a_b_g[0], a_b_g[1], a_b_g[2])
+			if len(a_b_g) == 4:
+				print "Executing analysis: holtwinters(%r,%r,%r,%r)" %(float(a_b_g[0]), float(a_b_g[1]), float(a_b_g[2]), int(a_b_g[3]))
+				x.holtwinters(float(a_b_g[0]), float(a_b_g[1]), float(a_b_g[2]), int(a_b_g[3]))
 				break
 			else:
-				print "Wrong input!\nPress 'q' to quit\n"
+				chk =  raw_input("Wrong input!\nExecute with default values (Y/N)?\n")
+				if chk == "Y":
+					x.holtwinters(0.2,0.1,0.05,5000)
+					sys.exit()
 			#x.holtwinters()
-		x.holtwinters(float(a_b_g[0]), float(a_b_g[1]), float(a_b_g[2]))
 else:
 	print "Please provide the path to load or re-load trace with load/realod arguments.\
 	\ni.e. <path/to/trace_dump> --l to load trace\
