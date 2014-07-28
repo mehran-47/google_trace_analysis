@@ -1,2 +1,0 @@
-gsutil ls gs://clusterdata-­‐2011-­‐1/
-gsutil cp -R gs://clusterdata-2011-1 destination-directory

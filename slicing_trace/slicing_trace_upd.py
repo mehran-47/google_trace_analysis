@@ -30,8 +30,16 @@ class csvSlicer:
 			with open(args[0], 'rb') as list_file:
 				self.a_slice = list_file.read().splitlines()
 				self.dumpDir = Dir(args[0].rsplit('/',1)[0])
-				self.a_slice = [float(value) for value in self.a_slice]
+				index = 0
+				json_dump = {}
+				for item in self.a_slice:
+					self.a_slice[index] = float(item)
+					json_dump[index] = item
+					index += 1
+				#self.a_slice = [float(value) for value in self.a_slice]
 				print "size of re-loaded trace file: %d" %(len(self.a_slice))
+				with open("KDE/_to_analyze_.json", 'wb') as json_file:
+					json_file.write(json.dumps(json_dump))
 
 
 	def get_rand_datadump(self):
@@ -52,10 +60,16 @@ class csvSlicer:
 		std = np.std(self.a_slice)
 		print "mean of the slice : %f\nstandard deviation of the slice : %f" %(mean, std)
 		self.dumpDir = Dir(os.getcwd() + '/raw_CPU_usg_slice_'+`slice_initial_index`)
-		
+		json_dump = {}
+		index = 0
 		with open(self.dumpDir.getDir() + '/raw_CPU_usg_slice_'+`slice_initial_index`+'_avg_'+`mean`+'_std_'+`std`, 'w') as outfile:
 			for item in self.a_slice:
 				outfile.write("%s\n" %item)
+				json_dump[index] = item
+				index += 1
+		with open(self.dumpDir.getDir().rsplit('/',1)[0]+"/KDE/_to_analyze_.json", 'wb') as json_file:
+			json_file.write(json.dumps(json_dump))
+
 
 
 	def holtwinters(self, alpha, beta, gamma, c, debug=False):

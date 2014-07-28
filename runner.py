@@ -3,6 +3,7 @@ import os
 import sys
 from slicing_trace.slicing_trace_upd import csvSlicer
 from slicing_trace.create_dir import *
+from KDE.kde_analysis import main as kde_main
 
 #x = csvSlicer()
 #x = csvSlicer('raw_CPU_usg_slice_2035742/raw_CPU_usg_slice_2035742_avg_1.5408333333333304_std_5.4967778931658016')
@@ -30,11 +31,12 @@ Default is alpha = 0.2, beta = 0.1, gamma = 0.05, forecast = 5000\n> ").split(",
 				x.holtwinters(float(a_b_g[0]), float(a_b_g[1]), float(a_b_g[2]), int(a_b_g[3]))
 				break
 			else:
-				chk =  raw_input("Wrong input!\nExecute with default values (Y/N)?\n")
-				if chk == "Y":
+				chk =  raw_input("Wrong input!\nExecute with default values (Y/N)?\n> ")
+				if chk == "Y" or "y":
 					x.holtwinters(0.2,0.1,0.05,5000)
 					sys.exit()
-			#x.holtwinters()
+	elif choice_two == "2":
+		kde_main()
 else:
 	print "Please provide the path to load or re-load trace with load/realod arguments.\
 	\ni.e. <path/to/trace_dump> --l to load trace\
