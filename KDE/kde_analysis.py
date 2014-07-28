@@ -514,6 +514,29 @@ def output_dict_to_json(source_dict, name, type, depth):
     with open('KDE/'+name+'_'+type, 'a') as json_output:
         json_output.write(json.dumps(data))
 
+"""
+class kde_analysis:
+    def __init__(self, *args):
+        outliers_above={
+            "0-2500":[0.0]*2500
+            "2500-5000":[0.0]*2500
+            "5000-7500":[0.0]*2500
+            "7500-10000":[0.0]*2500
+        }
+        outliers_below={
+            "1":[0.0]*2500
+            "2":[0.0]*2500
+            "3":[0.0]*2500
+            "4":[0.0]*2500
+        }
+        
+    def match_outlier_plots():
+        pass
+    def show_outlier_plots():
+        pass
+
+
 #Calling main function
 if __name__ == '__main__':
     main()
+"""
