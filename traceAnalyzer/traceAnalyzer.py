@@ -4,16 +4,19 @@ import json
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-from create_dir import Dir 
+from create_dir import Dir
+from threading import Thread
+from scipy.stats.stats import pearsonr
 
-class csvSlicer:
+class traceAnalyzer:
 	def __init__(self, *args):
 		#data = []
 		self.data = []
 		self.smoothed_data = []
 		self.a_slice = []
 		self.dumpDir = None
-		self.isloaded = False 
+		self.isloaded = False
+		self.inpt = "" 
 		if args[1] == "--l":
 			with open(args[0], 'rb') as input_file:
 				index = 0
@@ -85,7 +88,8 @@ class csvSlicer:
 	    """
 	    #Compute initial b and intercept using the first two complete c periods.
 	    
-	    y=self.a_slice[0:10000] if self.isloaded else self.a_slice
+	    #y=self.a_slice[0:10000] if self.isloaded else self.a_slice
+	    y=self.a_slice
 	    ylen =len(y)
 	    self.smoothed_data = [0] * (ylen+c)
 	    if debug:
@@ -157,18 +161,58 @@ class csvSlicer:
 	    plt.plot(self.a_slice, 'x')
 	    plt.axis([0,len(self.a_slice)+c,-10,120])
 	    plt.plot(self.smoothed_data)
+	    """
+	    t = Thread(target=self.temps)
+	    t.start()
+	    if self.inpt != "":
+	    	t.join()
+	    """
 	    plt.show()
+	def dist_predictor(self, *args):
+		dict_kde_comparer = {}
+		if args[0]=="above":
+			dist_file=open("KDE/outlier_data_above", 'r')
+		elif args[0]=="below":
+			dist_file=open("KDE/outlier_data_above", 'r')
+		else:
+			print "Missing/wrong argument in 'dist_predictor'"
+		
+		prev = []
+		next = []
+		count = 0
+		dict_kde_comparer = json.load(dist_file)
+		sorted_keys = sorted(dict_kde_comparer.keys())
+		
+		for i in range(len(sorted_keys)-1):
+			plot_number = len(sorted_keys)*100 + 10+ i
+			prev = [0.0]*(len(self.a_slice)/4)
+			next = [0.0]*(len(self.a_slice)/4)
+			length = len(next)
+			
+			for key in dict_kde_comparer[sorted_keys[i]]:
+				prev[int(key)%length] = float(dict_kde_comparer[sorted_keys[i]][key])
+				
+			for key in dict_kde_comparer[sorted_keys[i+1]]:
+				next[int(key)%length] = float(dict_kde_comparer[sorted_keys[i+1]][key])
+				
+			print "Correlation between outlier windows "+`str(sorted_keys[i])`+" and "+`str(sorted_keys[i+1])`+" is "+`pearsonr(prev,next)[0]*100`
+			plt.figure(1)
+			plt.subplot(211)
+			plt.plot(prev)
+			plt.subplot(212)
+			plt.plot(next)
+			plt.xlabel("CPU utilization")
+			plt.ylabel("Outlier distribution")
+			plt.show()
+			
+			
 
+	def match_outlier_plots(self):
+		pass
 
-"""
-x = csvSlicer()
-print len(x.data)
-x.get_rand_datadump()
-print len(x.data)
+	def show_outlier_plots(self):
+		pass
 
-x.holtwinters(0.2, 0.1, 0.05, 500)
-plt.plot(x.data, 'x')
-plt.axis([0,10500,-10,120])
-plt.plot(x.smoothed_data.values())
-plt.show()
-"""
+	def to_print_in_thread(*args):
+		for line in args:
+			print line
