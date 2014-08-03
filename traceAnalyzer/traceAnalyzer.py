@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from create_dir import Dir
 from threading import Thread
 from scipy.stats.stats import pearsonr
+from scipy.stats import gaussian_kde
 
 class traceAnalyzer:
 	def __init__(self, *args):
@@ -194,13 +195,17 @@ class traceAnalyzer:
 				
 			for key in dict_kde_comparer[sorted_keys[i+1]]:
 				next[int(key)%length] = float(dict_kde_comparer[sorted_keys[i+1]][key])
-				
-			print "Correlation between outlier windows "+`str(sorted_keys[i])`+" and "+`str(sorted_keys[i+1])`+" is "+`pearsonr(prev,next)[0]*100`
+			
+			grid = np.linspace(0,100,len(self.a_slice))
+			prev_kde = gaussian_kde(np.asarray(prev)).evaluate(grid).tolist()
+			next_kde = gaussian_kde(np.asarray(next)).evaluate(grid).tolist()
+			
+			print "Correlation between outlier windows "+`str(sorted_keys[i])`+" and "+`str(sorted_keys[i+1])`+" is "+`pearsonr(prev_kde,next_kde)[0]*100`
 			plt.figure(1)
 			plt.subplot(211)
-			plt.plot(prev)
+			plt.plot(grid, prev_kde)
 			plt.subplot(212)
-			plt.plot(next)
+			plt.plot(grid, next_kde)
 			plt.xlabel("CPU utilization")
 			plt.ylabel("Outlier distribution")
 			plt.show()
