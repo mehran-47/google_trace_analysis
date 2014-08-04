@@ -169,12 +169,14 @@ class traceAnalyzer:
 	    	t.join()
 	    """
 	    plt.show()
+	
+
 	def dist_predictor(self, *args):
 		dict_kde_comparer = {}
 		if args[0]=="above":
 			dist_file=open("KDE/outlier_data_above", 'r')
 		elif args[0]=="below":
-			dist_file=open("KDE/outlier_data_above", 'r')
+			dist_file=open("KDE/outlier_data_below", 'r')
 		else:
 			print "Missing/wrong argument in 'dist_predictor'"
 		
@@ -185,7 +187,6 @@ class traceAnalyzer:
 		sorted_keys = sorted(dict_kde_comparer.keys())
 		
 		for i in range(len(sorted_keys)-1):
-			plot_number = len(sorted_keys)*100 + 10+ i
 			prev = [0.0]*(len(self.a_slice)/4)
 			next = [0.0]*(len(self.a_slice)/4)
 			length = len(next)
@@ -196,7 +197,7 @@ class traceAnalyzer:
 			for key in dict_kde_comparer[sorted_keys[i+1]]:
 				next[int(key)%length] = float(dict_kde_comparer[sorted_keys[i+1]][key])
 			
-			grid = np.linspace(0,100,len(self.a_slice))
+			grid = np.linspace(0,100,len(self.a_slice)/4)
 			prev_kde = gaussian_kde(np.asarray(prev)).evaluate(grid).tolist()
 			next_kde = gaussian_kde(np.asarray(next)).evaluate(grid).tolist()
 			
@@ -221,3 +222,22 @@ class traceAnalyzer:
 	def to_print_in_thread(*args):
 		for line in args:
 			print line
+
+	def general_kde_analysis(self, number_of_slices = 4):
+		number_of_slices = 4
+		default_length = len(self.a_slice)/number_of_slices
+		grid = np.linspace(0,100,len(self.a_slice)/number_of_slices)
+		for i in range(number_of_slices-1):
+			prev = self.a_slice[ (i*default_length) : ((i+1)*default_length)]
+			next = self.a_slice[ ((i+1)*default_length) : ((i+2)*default_length)]
+			prev_kde = gaussian_kde(np.asarray(prev)).evaluate(grid).tolist()
+			next_kde = gaussian_kde(np.asarray(next)).evaluate(grid).tolist()
+			print "Correlation between outlier windows "+`(i*default_length)`+"-"+`(i+1*default_length)`+" and "+`(i+1)*default_length`+"-"+`(i+2)*default_length`+" is "+`pearsonr(prev_kde,next_kde)[0]*100`
+			plt.figure(1)
+			plt.subplot(211)
+			plt.plot(grid, prev_kde)
+			plt.subplot(212)
+			plt.plot(grid, next_kde)
+			plt.xlabel("CPU utilization")
+			plt.ylabel("Outlier distribution")
+			plt.show()

@@ -40,7 +40,8 @@ Default is alpha = 0.2, beta = 0.1, gamma = 0.05, forecast ="+ str(len(x.a_slice
 	elif choice_two == "2":
 		kde_main()
 	elif choice_two == "3":
-		x.dist_predictor("above")
+		#x.dist_predictor("above")
+		x.general_kde_analysis()
 else:
 	print "Please provide the path to load or re-load trace with load/realod arguments.\
 	\ni.e. <path/to/trace_dump> --l to load trace\
