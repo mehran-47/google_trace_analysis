@@ -48,6 +48,7 @@ class traceAnalyzer:
 
 	def get_rand_datadump(self):
 		slice_initial_index = random.randint(0, len(self.data)-10001)
+		print "\n--------------------------------------------------------------------------------\n"
 		#slice_initial_index = 2316696
 		print "slice starts from %d" %(slice_initial_index)
 		__max = 0.0
@@ -63,6 +64,7 @@ class traceAnalyzer:
 		mean = np.mean(self.a_slice)
 		std = np.std(self.a_slice)
 		print "mean of the slice : %f\nstandard deviation of the slice : %f" %(mean, std)
+		print "\n--------------------------------------------------------------------------------\n"
 		self.dumpDir = Dir(os.getcwd() + '/raw_CPU_usg_slice_'+`slice_initial_index`)
 		json_dump = {}
 		index = 0
@@ -105,7 +107,6 @@ class traceAnalyzer:
 	 
 	    #Compute for the level estimate a0 using b0 above.
 	    tbar  =sum(i for i in range(1, c+1)) / fc
-	    print tbar
 	    a0 =ybar1  - b0 * tbar
 	    if debug: print "a0 = ", a0
 	 
@@ -200,7 +201,7 @@ class traceAnalyzer:
 			grid = np.linspace(0,100,len(self.a_slice)/4)
 			prev_kde = gaussian_kde(np.asarray(prev)).evaluate(grid).tolist()
 			next_kde = gaussian_kde(np.asarray(next)).evaluate(grid).tolist()
-			
+			correlation_value = pearsonr(prev_kde,next_kde)[0]*100
 			print "Correlation between outlier windows "+`str(sorted_keys[i])`+" and "+`str(sorted_keys[i+1])`+" is "+`pearsonr(prev_kde,next_kde)[0]*100`
 			fig = plt.figure(1)
 			fig.suptitle('Correlation between the slices: '+`correlation_value`, fontsize=15)
@@ -224,13 +225,15 @@ class traceAnalyzer:
 		for line in args:
 			print line
 
-	def general_kde_analysis(self, number_of_slices = 4):
+	def general_kde_analysis(self, number_of_slices = 4, debug=True):
 		number_of_slices = 4
 		default_length = len(self.a_slice)/number_of_slices
 		grid = np.linspace(0,100,len(self.a_slice)/number_of_slices)
 		for i in range(number_of_slices-1):
 			prev = self.a_slice[ (i*default_length) : ((i+1)*default_length)]
 			next = self.a_slice[ ((i+1)*default_length) : ((i+2)*default_length)]
+			if debug:
+				print "\n\n", len(prev), len(next), "\n\n"
 			prev_kde = gaussian_kde(np.asarray(prev)).evaluate(grid).tolist()
 			next_kde = gaussian_kde(np.asarray(next)).evaluate(grid).tolist()
 			correlation_value = pearsonr(prev_kde,next_kde)[0]*100
