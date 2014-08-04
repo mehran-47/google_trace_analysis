@@ -225,7 +225,7 @@ class traceAnalyzer:
 		for line in args:
 			print line
 
-	def general_kde_analysis(self, number_of_slices = 4, debug=True):
+	def general_kde_analysis(self, number_of_slices = 4, debug=False):
 		number_of_slices = 4
 		default_length = len(self.a_slice)/number_of_slices
 		grid = np.linspace(0,100,len(self.a_slice)/number_of_slices)
