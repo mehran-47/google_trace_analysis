@@ -202,7 +202,8 @@ class traceAnalyzer:
 			next_kde = gaussian_kde(np.asarray(next)).evaluate(grid).tolist()
 			
 			print "Correlation between outlier windows "+`str(sorted_keys[i])`+" and "+`str(sorted_keys[i+1])`+" is "+`pearsonr(prev_kde,next_kde)[0]*100`
-			plt.figure(1)
+			fig = plt.figure(1)
+			fig.suptitle('Correlation between the slices: '+`correlation_value`, fontsize=15)
 			plt.subplot(211)
 			plt.plot(grid, prev_kde)
 			plt.subplot(212)
@@ -232,8 +233,10 @@ class traceAnalyzer:
 			next = self.a_slice[ ((i+1)*default_length) : ((i+2)*default_length)]
 			prev_kde = gaussian_kde(np.asarray(prev)).evaluate(grid).tolist()
 			next_kde = gaussian_kde(np.asarray(next)).evaluate(grid).tolist()
-			print "Correlation between outlier windows "+`(i*default_length)`+"-"+`(i+1*default_length)`+" and "+`(i+1)*default_length`+"-"+`(i+2)*default_length`+" is "+`pearsonr(prev_kde,next_kde)[0]*100`
-			plt.figure(1)
+			correlation_value = pearsonr(prev_kde,next_kde)[0]*100
+			print "Correlation between slice windows '"+`(i*default_length)`+"-"+`(i+1)*default_length`+"' and '"+`(i+1)*default_length`+"-"+`(i+2)*default_length`+"' is "+`correlation_value`
+			fig = plt.figure(1)
+			fig.suptitle('Correlation between the slices: '+`correlation_value`, fontsize=15)
 			plt.subplot(211)
 			plt.plot(grid, prev_kde)
 			plt.subplot(212)

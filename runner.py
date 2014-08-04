@@ -18,7 +18,8 @@ elif len(sys.argv) == 3 and sys.argv[2]=="--l" or sys.argv[2]=="--r":
 	print "Please choose one of the following functions to perform on the loaded trace\n\
 	1: Holt-Winter's Triple Exponential Smoothing\n\
 	2: Kernel Density Analysis\n\
-	3: Match Kernel Density Distribution sections"
+	3: Match Kernel Density Distribution sections\n\
+	4: Match outlier Kernel Density Distribution sections\n"
 	choice_two = raw_input("---------------------------------------------------------------------------------\n> ")
 	if choice_two == "1":
 		print "Holt-Winter's Triple Exponential Smoothing chosen"
@@ -42,6 +43,8 @@ Default is alpha = 0.2, beta = 0.1, gamma = 0.05, forecast ="+ str(len(x.a_slice
 	elif choice_two == "3":
 		#x.dist_predictor("above")
 		x.general_kde_analysis()
+	elif choice_two == "4":
+		x.dist_predictor("above")
 else:
 	print "Please provide the path to load or re-load trace with load/realod arguments.\
 	\ni.e. <path/to/trace_dump> --l to load trace\
